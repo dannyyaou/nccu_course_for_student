@@ -1,0 +1,872 @@
+// Code goes here
+
+(function () {
+    var app = angular.module('gemStore', ['store-directives']);
+
+    app.controller('GalleryController', function () {
+        this.imageIndex = 0;
+        this.setCurrent = function (imageNumber) {
+            console.log(imageNumber);
+            this.imageIndex = imageNumber || 0;
+        };
+    });
+
+    app.controller('StoreController', function () {
+        this.products = gems;
+    });
+
+
+    app.controller("ReviewController", function () {
+
+        this.review = {};
+        this.descriptionReview = {};
+        this.addReview = function (product) {
+            this.review.createdOn = Date.now();
+            product.reviews.push(this.review);
+            this.review = {};
+        };
+
+        this.addDescriptionReview = function (product) {
+            this.descriptionReview.createdOn = Date.now();
+            product.descriptionReviews.push(this.descriptionReview);
+            this.descriptionReview = {};
+        };
+
+    });
+
+    app.controller("SearchController", ["$scope", function ($scope) {
+        this.searchItems = searchlist;
+        $scope.searchhint;
+        $scope.selectcollegename;
+        $scope.collegechecked;
+        $scope.selectdepartname;
+        $scope.$watch('selectcollegename', function () {
+            collegechecked = true;
+        }, true);
+    }]);
+
+    app.controller("MycourseController", ["$scope", '$http', function ($scope, $http) {
+        this.courses = mycourseinfo;
+        $scope.genCourses = mycourseinfo[0]['修課計畫 所有明細'][1]['通識'];
+        $scope.PECourses = mycourseinfo[0]['修課計畫 所有明細'][3]['體育'];
+        $scope.serviceCourses = mycourseinfo[0]['修課計畫 所有明細'][4]['服務學習課程'];
+        $scope.requiredCourses = mycourseinfo[0]['修課計畫 所有明細'][6]['已修習之專業必修科目明細'];
+        $scope.electiveCourses = mycourseinfo[0]['修課計畫 所有明細'][7]['選修明細'];
+        $scope.militaryCourses = mycourseinfo[0]['修課計畫 所有明細'][8]['選修軍訓'];
+        //$scope.myrecommendCourses = myRecommendCourseList;
+        //$scope.myallcourses = userdetail.course;
+	$http.get('/getuserdetail/').
+                success(function (data, status, headers, config) {
+                    $scope.myallcourses = data.course;
+                    console.log(data);
+                });
+
+
+        $scope.getReconmmend = function () {
+            $http.get('http://140.119.19.39:8000/get_recommend/').
+                success(function (data, status, headers, config) {
+                $scope.myrecommendCourses= data;
+                  console.log(data);
+                });
+
+
+        };
+
+
+
+    }]);
+
+    app.controller('MyprofileController', ['$scope', '$http', function ($scope, $http) {
+       
+        $scope.myDeparment;
+        $scope.myGrade;
+        $scope.myStudentId;
+        $scope.list = [];
+
+	$http.get('/getuserdetail/').success(function (data, status, headers, config) {
+                   $scope.myName = data.info.u_name;
+                    console.log(data);});
+
+
+
+        $scope.submit = function () {
+            $http({
+                url: 'http://140.119.19.39:8000/updateinfo/',
+                method: "GET",
+                params: {
+                    "u_studentid": $scope.myStudentId,
+                    "u_grade": $scope.myGrade,
+                    "u_name": $scope.myName,
+                    "u_depart": $scope.myDeparment
+                }
+            });
+        };
+
+
+    }]);
+
+
+    var userdetail = {
+        "info": {
+            "u_studentid": " ",
+            "u_grade": " ",
+            "user_id": 6,
+            "f_id": "1170471866312114",
+            "u_name": "何建",
+            "u_depart": "系所"
+        },
+        "course": [
+            {
+                "c_id": 4463,
+                "score": "84.00",
+                "c_name": "體育[男女合班]—排球初級",
+                "c_teacher": "吳高讚"
+            },
+            {
+                "c_id": 4553,
+                "score": "82.00",
+                "c_name": "國文－中國思想名作選讀",
+                "c_teacher": "陳睿宏"
+            },
+            {
+                "c_id": 4260,
+                "score": "85.00",
+                "c_name": "企業資料通訊",
+                "c_teacher": "姜國輝"
+            },
+            {
+                "c_id": 4261,
+                "score": "95.00",
+                "c_name": "資訊系統專案設計",
+                "c_teacher": "苑守慈郁方傅豐玲"
+            },
+            {
+                "c_id": 4036,
+                "score": "84.00",
+                "c_name": "貨幣銀行學",
+                "c_teacher": "施燕"
+            },
+            {
+                "c_id": 5616,
+                "score": "91.90",
+                "c_name": "全民國防教育軍事訓練—國防政策",
+                "c_teacher": "馮永志"
+            },
+            {
+                "c_id": 4594,
+                "score": "85.00",
+                "c_name": "近代台灣歷史與人物",
+                "c_teacher": "林果顯"
+            },
+            {
+                "c_id": 5343,
+                "score": "85.00",
+                "c_name": "供應鏈管理實務",
+                "c_teacher": "陳立民"
+            },
+            {
+                "c_id": 4261,
+                "score": "85.00",
+                "c_name": "資訊系統專案設計",
+                "c_teacher": "苑守慈郁方傅豐玲"
+            },
+            {
+                "c_id": 5976,
+                "score": "72.00",
+                "c_name": "視窗程式設計",
+                "c_teacher": "張景堯"
+            },
+            {
+                "c_id": 4036,
+                "score": "88.00",
+                "c_name": "貨幣銀行學",
+                "c_teacher": "施燕"
+            },
+            {
+                "c_id": 4460,
+                "score": "79.00",
+                "c_name": "體育[男女合班]—國際標準舞初級",
+                "c_teacher": "楊昌雄"
+            },
+            {
+                "c_id": 4779,
+                "score": "79.00",
+                "c_name": "社會學動動腦",
+                "c_teacher": "苗延威"
+            },
+            {
+                "c_id": 3780,
+                "score": "81.00",
+                "c_name": "作業管理",
+                "c_teacher": "李易諭"
+            },
+            {
+                "c_id": 4261,
+                "score": "88.00",
+                "c_name": "資訊系統專案設計",
+                "c_teacher": "苑守慈郁方傅豐玲"
+            },
+            {
+                "c_id": 3551,
+                "score": "86.00",
+                "c_name": "離散數學",
+                "c_teacher": "張宜武"
+            },
+            {
+                "c_id": 3794,
+                "score": "74.00",
+                "c_name": "行銷管理",
+                "c_teacher": "洪順慶"
+            },
+            {
+                "c_id": 4454,
+                "score": "72.00",
+                "c_name": "體育[男女合班]—高爾夫初級",
+                "c_teacher": "童文俊"
+            },
+            {
+                "c_id": 4257,
+                "score": "82.00",
+                "c_name": "資料庫管理",
+                "c_teacher": "張欣綠"
+            },
+            {
+                "c_id": 4258,
+                "score": "84.00",
+                "c_name": "系統分析與設計",
+                "c_teacher": "季延平"
+            },
+            {
+                "c_id": 4259,
+                "score": "83.00",
+                "c_name": "管理科學",
+                "c_teacher": "陳春龍"
+            },
+            {
+                "c_id": 3848,
+                "score": "80.00",
+                "c_name": "商事法",
+                "c_teacher": "馮震宇"
+            },
+            {
+                "c_id": 4892,
+                "score": "96.00",
+                "c_name": "電影與國際關係",
+                "c_teacher": "蔡增家"
+            },
+            {
+                "c_id": 4930,
+                "score": "83.00",
+                "c_name": "醫療與生活─消化系統疾病與生活",
+                "c_teacher": "陳冠仰"
+            },
+            {
+                "c_id": 3777,
+                "score": "85.00",
+                "c_name": "資訊管理",
+                "c_teacher": "管郁君"
+            },
+            {
+                "c_id": 3511,
+                "score": "74.00",
+                "c_name": "經濟學",
+                "c_teacher": "廖四郎"
+            },
+            {
+                "c_id": 4177,
+                "score": "66.00",
+                "c_name": "初級會計學（二）",
+                "c_teacher": "詹凌菁"
+            },
+            {
+                "c_id": 4483,
+                "score": "90.00",
+                "c_name": "體育[男女合班]—籃球中級",
+                "c_teacher": "葉良志"
+            },
+            {
+                "c_id": 4598,
+                "score": "77.00",
+                "c_name": "大學英文（二）",
+                "c_teacher": "陳雅莉"
+            },
+            {
+                "c_id": 4820,
+                "score": "87.00",
+                "c_name": "科技與人文社會",
+                "c_teacher": "張瑜倩"
+            },
+            {
+                "c_id": 4255,
+                "score": "84.00",
+                "c_name": "程式設計",
+                "c_teacher": "劉文卿"
+            },
+            {
+                "c_id": 4176,
+                "score": "70.00",
+                "c_name": "初級會計學（一）",
+                "c_teacher": "周玲臺"
+            },
+            {
+                "c_id": 3784,
+                "score": "77.00",
+                "c_name": "管理學",
+                "c_teacher": "管康彥"
+            },
+            {
+                "c_id": 3520,
+                "score": "85.00",
+                "c_name": "新媒體科技文明-東亞與西方觀點",
+                "c_teacher": "湯宗益"
+            }
+        ]
+    }
+
+
+    var myRecommendCourseList = [
+        {
+            "c_id": 6117,
+            "depart": "歷史碩一歷史博一歷史碩二歷史博二",
+            "name": "唐代家族法研究（二）",
+            "credit": 2,
+            "semester": "103/2",
+            "score": 5,
+            "teacher": "羅彤華"
+        },
+        {
+            "c_id": 6110,
+            "depart": "歷史二",
+            "name": "中國古代醫療史",
+            "credit": 3,
+            "semester": "103/2",
+            "score": 4,
+            "teacher": "金仕起"
+        },
+        {
+            "c_id": 3507,
+            "depart": "商院選修",
+            "name": "寫作與口語訓練（二）",
+            "credit": 3,
+            "semester": "103/2",
+            "score": 2,
+            "teacher": "趙乙勵"
+        }
+    ];
+
+
+   
+
+    var searchlist = [
+        //college>> department>> courses>> each course{name,time,courseID,classroom}
+        {
+            collegename: "理學院",
+            departments: [{
+                departname: "心理學系",
+                courses: [{
+                    coursename: "心理與生活",
+                    courseID: "1000303205",
+                    classroom: "大勇樓201"
+                }, {
+                    coursename: "心理與生活",
+                    courseID: "1000303205",
+                    classroom: "大勇樓201"
+                }, {
+                    coursename: "心理與生活",
+                    courseID: "1000303205",
+                    classroom: "大勇樓201"
+                }]
+            }, {
+                departname: "應用數學系",
+                courses: [{
+                    coursename: "心理與生活",
+                    courseID: "1000303205",
+                    classroom: "大勇樓201"
+                }, {
+                    coursename: "心理與生活",
+                    courseID: "1000303205",
+                    classroom: "大勇樓201"
+                }, {
+                    coursename: "心理與生活",
+                    courseID: "1000303205",
+                    classroom: "大勇樓201"
+                }]
+            }
+
+            ]
+        },
+        {
+            collegename: "商學院",
+            departments: [{
+                departname: "企業管理學系",
+                courses: [{
+                    coursename: "心理與生活",
+                    courseID: "1000303205",
+                    classroom: "大勇樓201"
+                }, {
+                    coursename: "心理與生活",
+                    courseID: "1000303205",
+                    classroom: "大勇樓201"
+                }, {
+                    coursename: "心理與生活",
+                    courseID: "1000303205",
+                    classroom: "大勇樓201"
+                }]
+            }, {
+                departname: "資訊管理學系",
+                courses: [{
+                    coursename: "心理與生活",
+                    courseID: "1000303205",
+                    classroom: "大勇樓201"
+                }, {
+                    coursename: "心理與生活",
+                    courseID: "1000303205",
+                    classroom: "大勇樓201"
+                }, {
+                    coursename: "心理與生活",
+                    courseID: "1000303205",
+                    classroom: "大勇樓201"
+                }]
+            }
+
+            ]
+        }
+    ];
+
+
+    var gems = [{
+        name: '心理與生活',
+        deparment: "心理系",
+        description: "老師用ppt上課，每次都會有一組通關密碼來當作點名，內容有些很無聊，有些地方很專業可是常常輕描淡寫帶過。學期過程中有三篇電影心得可以當作加分，每次加總成績五分。因為是核心通識然後分數也不低，但是每堂課都要到不然會很容易跟小組脫節或者沒點到名。.",
+        courseID: "000351001",
+        teacher: "林靖庭 / LIN CHING-TING",
+        date: "一567 / mon567",
+        classroom: "道藩320224",
+        avgscore: 80,
+        popularity: 110.50,
+        courseDiff: 7,
+        color: '#CCC',
+        courseEasy: 14,
+        images: [
+            "http://cl.zdn.io/UuY7/gem-02.gif",
+            "http://cl.zdn.io/UuWP/gem-05.gif",
+            "http://cl.zdn.io/UuD4/gem-09.gif"
+        ],
+        reviews: [{
+            stars: 5,
+            body: "I love this gem!",
+            author: "joe@thomas.com",
+            createdOn: 1397490980837
+        }, {
+            stars: 1,
+            body: "This gem sucks.",
+            author: "tim@hater.com",
+            createdOn: 1397490980837
+        }
+        ],
+        descriptionReview: [
+            {
+                stars: 5,
+                body: "I love this gem!",
+                author: "joe@thomas.com",
+                createdOn: 1397490980837
+            },
+            {
+                stars: 5,
+                body: "I love this gem!",
+                author: "joe@thomas.com",
+                createdOn: 1397490980837
+            }
+        ]
+
+
+    }, {
+        name: '國文-古典詩選讀',
+        deparment: "中國語言學系",
+        description: "芳汶老師是學校數一數二熱門的老師人選，芳汶是天使阿，她溫柔卻也很堅毅，充滿想法又感情豐富。但她的課絕對不會是涼課。事實上你上她的課你就會無法控制自己的認真上課了！老師會在課上帶大家看過一些中外情詩，穿越古今，然後會分組報告一些戀愛時的題目。小組則要腦力激盪去想出一個最棒的呈現方式，比方說演戲或拍短片，在課堂上製造出符合題目的氛圍",
+        courseID: "000351021",
+        teacher: "芳汶 / FU-WEN",
+        date: "四567 / thu567",
+        classroom: "綜合270101",
+        avgscore: 75,
+        popularity: 22.90,
+        courseDiff: 6,
+        color: '#EEE',
+        courseEasy: 12,
+        images: [
+            "http://cl.zdn.io/UvAK/gem-01.gif",
+            "http://cl.zdn.io/Uuwd/gem-03.gif",
+            "http://cl.zdn.io/UuVP/gem-04.gif"
+        ],
+        reviews: [{
+            stars: 3,
+            body: "I think this gem was just OK, could honestly use more avgscore, IMO.",
+            author: "JimmyDean@sausage.com",
+            createdOn: 1397490980837
+        }, {
+            stars: 4,
+            body: "Any gem with 12 faces is for me!",
+            author: "gemsRock@alyssaNicoll.com",
+            createdOn: 1397490980837
+        }],
+
+        descriptionReviews: [
+            {
+                stars: 5,
+                body: "I love this gem!",
+                author: "joe@thomas.com",
+                createdOn: 1397490980837
+            },
+            {
+                stars: 5,
+                body: "I love this gem!",
+                author: "joe@thomas.com",
+                createdOn: 1397490980837
+            }
+        ]
+    }, {
+        name: '通往宇宙的神奇路',
+        deparment: "應用物理所",
+        description: "超級推薦、錯過可惜的一堂課，每堂必到，以學習單作為點名，評分根據上課筆記，老師會等大家抄完再繼續講，內容主要從西方觀星、東方占卜、老師經驗三條路來看宇宙，也會教大家實作、觀星等，每堂課的主題都很精彩，上完可以學到很多很實用的知識。非常夯，但加簽方式很多元公平，就算遞補序很後面或年級不高一樣有機會!",
+        courseID: "000351041",
+        teacher: "顏錫銘 / YEN SIMON H .",
+        date: "五567 / fri567",
+        classroom: "商館260210",
+        avgscore: 90,
+        popularity: 1100,
+        courseEasy: 6,
+        courseDiff: 2,
+        color: '#000',
+        images: [
+            "http://cl.zdn.io/Uv3v/gem-06.gif",
+            "http://cl.zdn.io/Uu84/gem-07.gif",
+            "http://cl.zdn.io/Uuky/gem-10.gif"
+        ],
+        reviews: [{
+            stars: 1,
+            body: "This gem is WAY too expensive for its rarity value.",
+            author: "turtleguyy@zdn.me",
+            createdOn: 1397490980837
+        }, {
+            stars: 1,
+            body: "BBW: High avgscore != High Quality.",
+            author: "LouisW407@gmail.com",
+            createdOn: 1397490980837
+        }, {
+            stars: 1,
+            body: "Don't waste your rubles!",
+            author: "nat@flatland.com",
+            createdOn: 1397490980837
+        }],
+        descriptionReviews: [
+            {
+                stars: 5,
+                body: "I love this gem!",
+                author: "joe@thomas.com",
+                createdOn: 1397490980837
+            },
+            {
+                stars: 5,
+                body: "I love this gem!",
+                author: "joe@thomas.com",
+                createdOn: 1397490980837
+            }
+        ]
+    }];
+
+
+    //var mycourseinfo=[
+    //  {
+    //    "修課計畫 所有明細": [
+    //      {
+    //        "目前校定必修修習狀況摘要": [
+    //          {
+    //            "getRemark": "無未修畢校定必修科目"
+    //          }
+    //        ]
+    //      },
+    //      {
+    //        "通識": [
+    //
+    //          {
+    //            "getRemark": "[人] [社]",
+    //            "getScostr": "96.00",
+    //            "getSubnum": "044049-00-1",
+    //            "getSubpnt2": "3.0",
+    //            "getKind": "人文通",
+    //            "getSemester": "101/1",
+    //            "getSubchi": "電影與國際關係"
+    //          },
+    //          {
+    //            "getRemark": "核心",
+    //            "getScostr": "95.00",
+    //            "getSubnum": "043027-01-1",
+    //            "getSubpnt2": "3.0",
+    //            "getKind": "自然通",
+    //            "getSemester": "100/2",
+    //            "getSubchi": "科技與人文社會"
+    //          }
+    //        ]
+    //      },
+    //      {
+    //        "目前修習狀況摘要": [
+    //          {
+    //            "getRemark": "[缺外語檢定]"
+    //          }
+    //        ]
+    //      },
+    //      {
+    //        "體育": [
+    //          {
+    //            "getScostr": "02.00",
+    //            "getSubnum": "002327    -01-1",
+    //            "getSubpnt2": "0.0",
+    //            "getSemester": "103/1",
+    //            "getSubchi": "體育[男女合班]—排球初級"
+    //          },
+    //          {
+    //            "getScostr": "90.00",
+    //            "getSubnum": "002360    -00-1",
+    //            "getSubpnt2": "0.0",
+    //            "getSemester": "100/2",
+    //            "getSubchi": "體育[男女合班]—籃球中級"
+    //          }
+    //        ]
+    //      },
+    //      {
+    //        "服務學習課程": [
+    //          {
+    //            "getScostr": "[通過]",
+    //            "getSubnum": "050029    -03-1",
+    //            "getSubpnt2": "0.0",
+    //            "getSemester": "100/2",
+    //            "getSubchi": "服務學習課程"
+    //          },
+    //          {
+    //            "getScostr": "[通過]",
+    //            "getSubnum": "050051    -00-1",
+    //            "getSubpnt2": "0.0",
+    //            "getSemester": "100/1",
+    //            "getSubchi": "服務學習課程"
+    //          }
+    //        ]
+    //      },
+    //      {
+    //        "群修修習狀況摘要": [
+    //          {
+    //            "getRemark": "無未修畢群修科目"
+    //          },
+    //          {
+    //            "getRemark": "【群A已修1門】【群B已修1門】【群C已修3門】"
+    //          }
+    //        ]
+    //      },
+    //      {
+    //        "已修習之專業必修科目明細": [
+    //
+    //          {
+    //            "getScostr": "95.00",
+    //            "getSubnum": "306016    -00-3",
+    //            "getSubpnt2": "3.0",
+    //            "getSemester": "103/1",
+    //            "getSubchi": "資訊系統專案設計"
+    //          },
+    //          {
+    //            "getScostr": "92.00",
+    //            "getSubnum": "306046    -00-1",
+    //            "getSubpnt2": "3.0",
+    //            "getSemester": "100/2",
+    //            "getSubchi": "程式設計"
+    //          },
+    //
+    //        ]
+    //      },
+    //      {
+    //        "選修明細": [
+    //          {
+    //            "getScostr": "95.00",
+    //            "getSubnum": "000215    -04-1",
+    //            "getSubpnt2": "3.0",
+    //            "getSemester": "102/1",
+    //            "getSubchi": "貨幣銀行學"
+    //          },
+    //
+    //          {
+    //            "getScostr": "90.00",
+    //            "getSubnum": "753854    -00-1",
+    //            "getSubpnt2": "3.0",
+    //            "getSemester": "103/1",
+    //            "getSubchi": "進階Java平台程式設計"
+    //          }
+    //        ]
+    //      },
+    //      {
+    //        "選修軍訓": [
+    //          {
+    //            "getScostr": "91.90",
+    //            "getSubnum": "003827    -02-1",
+    //            "getSubpnt2": "2.0",
+    //            "getSemester": "102/2",
+    //            "getSubchi": "全民國防教育軍事訓練—國防政策"
+    //          },
+    //          {
+    //            "getScostr": "85.00",
+    //            "getSubnum": "003833    -02-1",
+    //            "getSubpnt2": "2.0",
+    //            "getSemester": "101/1",
+    //            "getSubchi": "[軍訓]--軍隊與性別"
+    //          }
+    //        ]
+    //      }
+    //    ]
+    //  }
+    //]
+    var mycourseinfo = [
+        {
+            "修課計畫 所有明細": [
+                {
+                    "目前校定必修修習狀況摘要": [
+                        {
+                            "getRemark": "無未修畢校定必修科目"
+                        }
+                    ]
+                },
+                {
+                    "通識": [
+
+                        {
+                            "getRemark": "[人] [社]",
+                            "getScostr": "96.00",
+                            "getSubnum": "044049-00-1",
+                            "getSubpnt2": "3.0",
+                            "getKind": "人文通",
+                            "getSemester": "101/1",
+                            "getSubchi": "電影與國際關係"
+                        },
+                        {
+                            "getRemark": "核心",
+                            "getScostr": "95.00",
+                            "getSubnum": "043027-01-1",
+                            "getSubpnt2": "3.0",
+                            "getKind": "自然通",
+                            "getSemester": "100/2",
+                            "getSubchi": "科技與人文社會"
+                        }
+                    ]
+                },
+                {
+                    "目前修習狀況摘要": [
+                        {
+                            "getRemark": "[缺外語檢定]"
+                        }
+                    ]
+                },
+                {
+                    "體育": [
+                        {
+                            "getScostr": "02.00",
+                            "getSubnum": "002327    -01-1",
+                            "getSubpnt2": "0.0",
+                            "getSemester": "103/1",
+                            "getSubchi": "體育[男女合班]—排球初級"
+                        },
+                        {
+                            "getScostr": "90.00",
+                            "getSubnum": "002360    -00-1",
+                            "getSubpnt2": "0.0",
+                            "getSemester": "100/2",
+                            "getSubchi": "體育[男女合班]—籃球中級"
+                        }
+                    ]
+                },
+                {
+                    "服務學習課程": [
+                        {
+                            "getScostr": "[通過]",
+                            "getSubnum": "050029    -03-1",
+                            "getSubpnt2": "0.0",
+                            "getSemester": "100/2",
+                            "getSubchi": "服務學習課程"
+                        },
+                        {
+                            "getScostr": "[通過]",
+                            "getSubnum": "050051    -00-1",
+                            "getSubpnt2": "0.0",
+                            "getSemester": "100/1",
+                            "getSubchi": "服務學習課程"
+                        }
+                    ]
+                },
+                {
+                    "群修修習狀況摘要": [
+                        {
+                            "getRemark": "無未修畢群修科目"
+                        },
+                        {
+                            "getRemark": "【群A已修1門】【群B已修1門】【群C已修3門】"
+                        }
+                    ]
+                },
+                {
+                    "已修習之專業必修科目明細": [
+
+                        {
+                            "getScostr": "95.00",
+                            "getSubnum": "306016    -00-3",
+                            "getSubpnt2": "3.0",
+                            "getSemester": "103/1",
+                            "getSubchi": "資訊系統專案設計"
+                        },
+                        {
+                            "getScostr": "92.00",
+                            "getSubnum": "306046    -00-1",
+                            "getSubpnt2": "3.0",
+                            "getSemester": "100/2",
+                            "getSubchi": "程式設計"
+                        }
+
+                    ]
+                },
+                {
+                    "選修明細": [
+                        {
+                            "getScostr": "95.00",
+                            "getSubnum": "000215    -04-1",
+                            "getSubpnt2": "3.0",
+                            "getSemester": "102/1",
+                            "getSubchi": "貨幣銀行學"
+                        },
+
+                        {
+                            "getScostr": "90.00",
+                            "getSubnum": "753854    -00-1",
+                            "getSubpnt2": "3.0",
+                            "getSemester": "103/1",
+                            "getSubchi": "進階Java平台程式設計"
+                        }
+                    ]
+                },
+                {
+                    "選修軍訓": [
+                        {
+                            "getScostr": "91.90",
+                            "getSubnum": "003827    -02-1",
+                            "getSubpnt2": "2.0",
+                            "getSemester": "102/2",
+                            "getSubchi": "全民國防教育軍事訓練—國防政策"
+                        },
+                        {
+                            "getScostr": "85.00",
+                            "getSubnum": "003833    -02-1",
+                            "getSubpnt2": "2.0",
+                            "getSemester": "101/1",
+                            "getSubchi": "[軍訓]--軍隊與性別"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+
+
+})();

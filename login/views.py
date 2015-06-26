@@ -1,0 +1,121 @@
+# coding=utf8
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+
+from recommand.models import raw_course
+from recommand.models import course
+from recommand.models import user_detail
+from recommand.models import course_score
+from recommand.models import user_course
+from social_auth.models import UserSocialAuth
+
+from django.views.decorators.csrf import csrf_exempt
+# Create your views here.
+from django.contrib import auth
+from recommand.models import *
+import json
+
+
+
+def index(request):
+    return render(request,'index.html',locals())
+
+def login(request):
+
+    if request.user.is_authenticated(): 
+        return HttpResponseRedirect('/index/')
+
+    username = request.POST.get('username', '')
+    password = request.POST.get('password', '')
+    
+    user = auth.authenticate(username=username, password=password)
+   
+    if user is not None and user.is_active:
+        auth.login(request, user)
+        request.session['user_id'] = 1
+        return HttpResponseRedirect('/index/')
+    else:
+        return render(request,'login.html') 
+
+
+def islogin(request):
+    if request.user.is_authenticated(): 
+	fb = UserSocialAuth.objects.get(user = request.user)
+	checkUser = user_detail.objects.filter(u_id=request.user.id)
+	if(checkUser):
+	    print '123'
+	else:
+	    user_detail.objects.create(u_id = request.user.id, u_name = request.user.username,u_fid  = fb.uid)
+        result = [{'result':'success'}]
+        return HttpResponse(json.dumps(result))
+    else:
+        result = [{'result':'error'}]
+        return HttpResponse(json.dumps(result))
+
+def updateinfo(request):
+    if request.user.is_authenticated():
+        if request.method == 'GET':
+            u_id = request.user.id
+            u_name = request.GET.get('u_name')
+            u_studentid = request.GET.get('u_studentid')
+            u_depart = request.GET.get('u_depart')
+            u_grade = request.GET.get('u_grade')
+            print u_id
+            user_detail.objects.filter(u_id=u_id).update(u_name=u_name, u_studentid=u_studentid, u_depart=u_depart, u_grade=u_grade)
+            result = [{'result':'success'}]
+            return HttpResponse(json.dumps(result))
+    else:
+        result = [{'result':'error'}]
+        return HttpResponse(json.dumps(result))
+
+def getUserDetail(request):
+    if request.user.is_authenticated():
+     
+        result_dict = dict()
+        temp_dict1 = dict()
+
+        userid = request.user.id
+	row = user_detail.objects.get(u_id=userid)
+	fb = UserSocialAuth.objects.get(user = request.user)
+        temp_dict1={      'user_id':row.u_id,
+                           'u_name':row.u_name,  
+                           'u_studentid':row.u_studentid,
+                           'u_grade':row.u_grade,
+                           'f_id':row.u_fid,
+                          }
+    	
+        course_list = list()
+        for us in user_course.objects.filter(u_id=userid):
+            temp_dict = {'c_id':us.c_id.id,
+                         'score':str(us.uc_grade),
+                         'c_name':us.c_id.c_name,
+                         'c_teacher':us.c_id.c_teacher}
+            course_list.append(temp_dict)
+        result_dict = { 'info':temp_dict1 , 'course' : course_list}
+
+
+    return HttpResponse(json.dumps(result_dict))
+
+def getUserData(request):
+    
+    result_list=list()
+    temp_dict1 = dict()
+
+    if request.method == 'GET':
+         userid = request.GET.get('userid')    
+	 row = user_detail.objects.get(u_id=userid)
+	 fb = UserSocialAuth.objects.get(user = request.user)
+         temp_dict1={      'user_id':row.u_id,
+                           'u_name':row.u_name,  
+                           'fb':'http://graph.facebook.com/'+row.u_fid+'/picture?type=large',
+                          }
+    	 result_list.append(temp_dict1)
+
+
+    return HttpResponse(json.dumps(result_list))
+
+
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect('/static/index.html')

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html ng-app="gemStore">
+<head>
+    <meta charset="utf-8"/>
+    <title>AngularJS</title>
+    <!--<link data-require="bootstrap-css" data-semver="3.1.1" rel="stylesheet"-->
+    <!--href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>-->
+    <!--<link data-require="semantic-ui@*" data-semver="0.9.6" rel="stylesheet"-->
+    <!--href="https://raw.github.com/Semantic-Org/Semantic-UI/0.9.6/build/packaged/css/semantic.min.css"/>-->
+    <!--<script data-require="semantic-ui@*" data-semver="0.9.6"-->
+    <!--src="https://raw.github.com/Semantic-Org/Semantic-UI/0.9.6/build/packaged/javascript/semantic.min.js"></script>-->
+    <!--<link rel="stylesheet" href="style.css"/>-->
+    <!--<link rel="stylesheet" href="ngstyle.css">-->
+    <!--<script data-require="angular.js@1.2.x" src="http://code.angularjs.org/1.2.15/angular.js"-->
+    <!--data-semver="1.2.15"></script>-->
+    <!--<script data-require="jquery@*" data-semver="2.0.3" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>-->
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0">
+    <title>MRT Express</title>
+    <script type="text/javascript" src="javascripts/angular-1.3.15.min.js"></script>
+    <script type="text/javascript" src="javascripts/angular-animate-1.3.15.min.js"></script>
+    <script type="text/javascript" src="javascripts/angular-aria-1.3.15.min.js"></script>
+    <script type="text/javascript" src="javascripts/angular-material-0.9.7.min.js"></script>
+    <script type="text/javascript" src="javascripts/jquery-2.1.3.min.js"></script>
+    <script type="text/javascript" src="javascripts/app.js"></script>
+    <link rel="stylesheet" type="text/css" href="stylesheet2/reset.css">
+    <link rel="stylesheet" type="text/css" href="stylesheet2/angular-material-0.9.7.min.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+
+
+    <script src="javascripts/myapp.js"></script>
+    <script src="javascripts/products.js"></script>
+
+
+</head>
+<body>
+
+
+<md-toolbar class="nav">
+    <div class="md-toolbar-tools">
+        <h2 ng-click='cleanSearch()' style="cursor: pointer;">
+            <span>帕森課程查詢系統</span>
+        </h2>
+        <span flex></span>
+        <md-button>
+            <a href="person.html">我的推薦</a>
+        </md-button>
+        <md-button class="md-icon-button" aria-label="More">
+            <md-icon md-svg-icon="img/icons/more_vert.svg"></md-icon>
+        </md-button>
+    </div>
+</md-toolbar>
+
+
+<div ng-controller="MycourseController as mycourseCtrl" class="list-group">
+
+    <!-- Return the array of "通識"  -->
+    <!--{{mycourseCtrl.courses[0]['修課計畫 所有明細'][1]['通識']}}-->
+    <header>
+        <h1 class="text-center">My Course Profile</h1>
+
+        <h2 class="text-center">– This is my courses–</h2>
+    </header>
+
+
+    <h3>通識</h3>
+
+    <div ng-repeat="mycourse in genCourses" class="list-group-item">
+        <h3>Course #{{$index + 1}} {{mycourse.getSubchi}}<em class="pull-right">Score:{{mycourse.getScostr}}</em></h3>
+
+        <div>
+            <div>
+                <blockquote>
+                    學分數:{{mycourse.getSubpnt2}} 種類:{{mycourse.getKind}} {{mycourse.getRemark}}
+                    學期:{{mycourse.getSemester}}
+                </blockquote>
+            </div>
+
+        </div>
+        <div ng-controller="StoreController as store">
+            <product-tabs></product-tabs>
+        </div>
+    </div>
+
+
+    <h3>體育</h3>
+
+    <div ng-repeat="mycourse in PECourses" class="list-group-item">
+        <h3>Course #{{$index + 1}} {{mycourse.getSubchi}}<em class="pull-right">Score:{{mycourse.getScostr}}</em></h3>
+
+        <div>
+            <div>
+                <blockquote>
+                    學分數:{{mycourse.getSubpnt2}} 學期:{{mycourse.getSemester}}
+                </blockquote>
+            </div>
+
+        </div>
+        <product-tabs></product-tabs>
+    </div>
+
+
+    <h3>服務學習課程</h3>
+
+    <div ng-repeat="mycourse in serviceCourses" class="list-group-item">
+        <h3>Course #{{$index + 1}} {{mycourse.getSubchi}}<em class="pull-right">Score:{{mycourse.getScostr}}</em></h3>
+
+        <div>
+            <div>
+                <blockquote>
+                    學分數:{{mycourse.getSubpnt2}} 學期:{{mycourse.getSemester}}
+                </blockquote>
+            </div>
+
+        </div>
+        <product-tabs></product-tabs>
+    </div>
+
+
+    <h3>已修習之專業必修科目明細</h3>
+
+    <div ng-repeat="mycourse in requiredCourses" class="list-group-item">
+        <h3>Course #{{$index + 1}} {{mycourse.getSubchi}}<em class="pull-right">Score:{{mycourse.getScostr}}</em></h3>
+
+        <div>
+            <div>
+                <blockquote>
+                    學分數:{{mycourse.getSubpnt2}} 學期:{{mycourse.getSemester}}
+                </blockquote>
+            </div>
+
+        </div>
+        <product-tabs></product-tabs>
+    </div>
+
+
+    <h3>選修明細</h3>
+
+    <div ng-repeat="mycourse in electiveCourses" class="list-group-item">
+        <h3>Course #{{$index + 1}} {{mycourse.getSubchi}}<em class="pull-right">Score:{{mycourse.getScostr}}</em></h3>
+
+        <div>
+            <div>
+                <blockquote>
+                    學分數:{{mycourse.getSubpnt2}} 學期:{{mycourse.getSemester}}
+                </blockquote>
+            </div>
+
+        </div>
+        <product-tabs></product-tabs>
+    </div>
+
+
+    <h3>選修軍訓</h3>
+
+    <div ng-repeat="mycourse in militaryCourses" class="list-group-item">
+        <h3>Course #{{$index + 1}} {{mycourse.getSubchi}}<em class="pull-right">Score:{{mycourse.getScostr}}</em></h3>
+
+        <div>
+            <div>
+                <blockquote>
+                    學分數:{{mycourse.getSubpnt2}} 學期:{{mycourse.getSemester}}
+                </blockquote>
+            </div>
+
+        </div>
+        <product-tabs></product-tabs>
+    </div>
+
+    <div>
+
+
+    </div>
+
+</div>
+
+
+<div ng-controller="FetchController">
+    <select ng-model="method" aria-label="Request method">
+        <option>GET</option>
+        <option>JSONP</option>
+    </select>
+    <input type="text" ng-model="url" size="80" aria-label="URL"/>
+    <button id="fetchbtn" ng-click="fetch()">fetch</button>
+    <br>
+    <button id="samplegetbtn" ng-click="updateModel('GET', 'http://140.119.19.39:8000/get_recommend/')">Sample GET
+    </button>
+    <button id="samplejsonpbtn"
+            ng-click="updateModel('JSONP',
+                  'http://140.119.19.39:8000/get_recommend/')">
+        Sample JSONP
+    </button>
+    <button id="invalidjsonpbtn"
+            ng-click="updateModel('JSONP', 'http://140.119.19.39:8000/get_recommend/')">
+        Invalid JSONP
+    </button>
+    <pre>http status code: {{status}}</pre>
+    <pre>http response data: {{data}}</pre>
+</div>
+
+</body>
+</html>
